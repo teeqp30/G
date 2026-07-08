@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+# قبل إلغاء التثبيت: إعادة تحميل SpringBoard حتى تطبّق الإزالة
+if [ "$1" = "remove" ]; then
+  if command -v sbreload >/dev/null 2>&1; then
+    sbreload
+  else
+    killall -9 SpringBoard || true
+  fi
+  if command -v uicache >/dev/null 2>&1; then
+    uicache || true
+  fi
+fi
+exit 0

@@ -1,0 +1,9 @@
+Package: com.teeqp30.wolfox
+Name: Wolfox GPS
+Version: 1.0-1
+Architecture: iphoneos-arm64
+Depends: mobilesubstrate
+Maintainer: teeqp30 <teeqp30@users.noreply.github.com>
+Section: Tweaks
+Priority: optional
+Description: Wolfox GPS — أداة لتزوير/محاكاة الموقع على أجهزة iOS (tweak).

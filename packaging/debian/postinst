@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+# بعد تثبيت التويك: أعد تحميل SpringBoard (أو sbreload إن وُجد)
+if command -v sbreload >/dev/null 2>&1; then
+  sbreload
+else
+  killall -9 SpringBoard || true
+fi
+# تحديث الكاش إن احتجت
+if command -v uicache >/dev/null 2>&1; then
+  uicache || true
+fi
+exit 0
