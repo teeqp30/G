@@ -796,14 +796,25 @@ static UIWindow *wolfox_overlayWindow = nil;
 - (void)hideToolCompletely { _panel.hidden = YES; _toolHidden = YES; [self showToast:@"تم إخفاء الأداة. انقر ثلاث مرات بإصبعين للإظهار."]; }
 - (void)showToolGesture { _panel.hidden = NO; _toolHidden = NO; [self bringSubviewToFront:_panel]; }
 
-// TableView & Bluetooth (Stubs for brevity, same as original)
+// TableView & Bluetooth
 - (NSInteger)tableView:(UITableView *)t numberOfRowsInSection:(NSInteger)s { return t == _btTable ? self.discoveredDevices.count : [WolfoxSpoofStore shared].favorites.count; }
 - (UITableViewCell *)tableView:(UITableView *)t cellForRowAtIndexPath:(NSIndexPath *)i { 
     UITableViewCell *c = [t dequeueReusableCellWithIdentifier:@"c"]; if(!c) c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"c"];
-    c.backgroundColor = [UIColor clearColor]; c.textLabel.textColor = [UIColor whiteColor];
+    c.backgroundColor = [UIColor clearColor]; c.textLabel.textColor = [UIColor whiteColor]; c.detailTextLabel.textColor = [UIColor lightGrayColor];
+    if (t == _btTable) {
+        NSDictionary *d = self.discoveredDevices[i.row];
+        NSString *name = d[@"name"] ?: d[@"identifier"] ?: @"Bluetooth Device";
+        c.textLabel.text = name;
+        if (d[@"rssi"]) c.detailTextLabel.text = [NSString stringWithFormat:@"RSSI: %@", d[@"rssi"]];
+    } else {
+        NSDictionary *fav = [WolfoxSpoofStore shared].favorites[i.row];
+        NSString *fname = fav[@"name"] ?: [NSString stringWithFormat:@"%.6f, %.6f", [fav[@"lat"] doubleValue], [fav[@"lon"] doubleValue]];
+        c.textLabel.text = fname;
+        c.detailTextLabel.text = [NSString stringWithFormat:@"Lat: %@ Lon: %@", fav[@"lat"], fav[@"lon"]];
+    }
     return c;
 }
-- (void)addFav { if(!_pin) return; [[WolfoxSpoofStore shared].favorites addObject:@{@"name":@"Saved", @"lat":@(_pin.coordinate.latitude), @"lon":@(_pin.coordinate.longitude)}]; [[WolfoxSpoofStore shared] save]; [self showToast:@"تم الحفظ ⭐"]; }
+- (void)addFav { if(!_pin) return; [[WolfoxSpoofStore shared].favorites addObject:@{@"name":@"Saved", @"lat":@(_pin.coordinate.latitude), @"lon":@(_pin.coordinate.longitude)}]; [[WolfoxSpoofStore shared] save]; [self showToast:@"تم حفظ الموقع إلى المفضلة"]; }
 - (void)showFav { _panel.hidden = YES; _favView.hidden = NO; [_table reloadData]; }
 - (void)hideFav { _favView.hidden = YES; _panel.hidden = NO; }
 - (void)findAllMosques { [self showToast:@"جاري البحث عن المساجد القريبة..."]; }
